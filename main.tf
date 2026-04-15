@@ -15,6 +15,8 @@ locals {
   )
 }
 
+data "aws_caller_identity" "current" {}
+
 # ── VPC ──────────────────────────────────────────────────────────────
 module "vpc" {
   source = "git::https://github.com/Shivani-1998-Devops/vpc.git"
@@ -56,7 +58,7 @@ module "ec2_instances" {
 module "s3_bucket" {
   source = "git::https://github.com/Shivani-1998-Devops/s3.git"
 
-  bucket_name = "${local.name_prefix}-${var.bucket_suffix}"
+  bucket_name = "${local.name_prefix}-${var.bucket_suffix}-${data.aws_caller_identity.current.account_id}"
   environment = var.environment
   tags        = merge(local.common_tags, { Purpose = "storage" })
 }
